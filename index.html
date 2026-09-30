@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FROXYYY — 3D gaming shop</title>
+  <meta name="description" content="Moderné 3D tlačené doplnky pre gaming setup.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="logo" href="#"><span>F</span> FROXYYY</a>
+    <nav>
+      <a href="#shop">Shop</a><a href="#custom">Na mieru</a><a href="#about">O nás</a>
+    </nav>
+    <button class="cart-btn" id="cartBtn">Košík <b id="cartCount">0</b></button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">3D PRINTED • MADE IN SLOVAKIA</p>
+        <h1>Upgrade svoj<br><em>setup.</em></h1>
+        <p class="hero-copy">Praktické a štýlové 3D doplnky pre gamerov, ktoré si zaslúžia miesto na tvojom stole.</p>
+        <a class="primary" href="#shop">Pozrieť produkty <span>→</span></a>
+      </div>
+      <div class="hero-card">
+        <div class="orb">F</div>
+        <span>NEW DROP</span>
+        <strong>Gaming<br>Collection</strong>
+      </div>
+    </section>
+
+    <section class="ticker"><span>⚡ 3D TLAČ NA OBJEDNÁVKU</span><span>•</span><span>🇸🇰 VYROBENÉ NA SLOVENSKU</span><span>•</span><span>🎮 PRE TVOJ SETUP</span></section>
+
+    <section id="shop" class="shop">
+      <div class="section-head"><div><p class="eyebrow">SHOP</p><h2>Vyber si svoj upgrade.</h2></div><div class="filters" id="filters"><button class="active" data-cat="Všetko">Všetko</button><button data-cat="Gaming">Gaming</button><button data-cat="Setup">Setup</button><button data-cat="Doplnky">Doplnky</button></div></div>
+      <div class="grid" id="products"></div>
+    </section>
+
+    <section id="custom" class="custom">
+      <div><p class="eyebrow">MADE FOR YOU</p><h2>Chceš niečo<br><em>vlastné?</em></h2><p>Navrhni si vlastnú kľúčenku s menom alebo prezývkou. Ty vyberieš text, my ju vytlačíme.</p><button class="primary" id="customBtn">Vytvoriť kľúčenku →</button></div>
+      <div class="custom-preview"><span>FROXYYY</span><small>YOUR NAME</small></div>
+    </section>
+
+    <section id="about" class="about"><p class="eyebrow">PREČO FROXYYY?</p><div class="about-grid"><h2>Malé veci.<br><em>Veľký rozdiel.</em></h2><div class="points"><p><b>01</b> Premyslený dizajn<br><span>Produkty navrhujeme tak, aby dobre vyzerali aj fungovali.</span></p><p><b>02</b> 3D tlač na objednávku<br><span>Tlačíme až keď si objednáš. Menej odpadu, viac možností.</span></p><p><b>03</b> Osobný prístup<br><span>FROXYYY je malý slovenský projekt, nie anonymný marketplace.</span></p></div></div></section>
+  </main>
+
+  <footer><strong>FROXYYY</strong><span>3D doplnky pre tvoj setup.</span><span>© 2026 FROXYYY</span></footer>
+
+  <aside class="drawer" id="drawer"><div class="drawer-head"><h3>Tvoj košík</h3><button id="closeCart">×</button></div><div id="cartItems"></div><div class="cart-bottom"><div><span>Spolu</span><strong id="total">0,00 €</strong></div><button class="primary full" id="checkout">Pokračovať k objednávke</button></div></aside>
+  <div class="overlay" id="overlay"></div>
+
+  <dialog id="customDialog"><button class="x" data-close>×</button><p class="eyebrow">CUSTOM</p><h2>Vlastná kľúčenka</h2><p>Napíš meno alebo prezývku, ktorú chceš vytlačiť.</p><input id="customName" maxlength="18" placeholder="napr. FROXYYY"><div class="colors"><button data-color="Čierna" class="selected">Čierna</button><button data-color="Biela">Biela</button><button data-color="Fialová">Fialová</button></div><button class="primary full" id="addCustom">Pridať do košíka · 6,90 €</button></dialog>
+
+  <dialog id="checkoutDialog"><button class="x" data-close>×</button><p class="eyebrow">OBJEDNÁVKA</p><h2>Dokonči objednávku</h2><div class="form"><input id="name" placeholder="Meno a priezvisko"><input id="email" type="email" placeholder="E-mail"><input id="phone" placeholder="Telefón"><select id="pickup"><option value="">Vyber výdajné miesto</option><option>Packeta — Nitra, centrum</option><option>Packeta — Nitra, Chrenová</option><option>Packeta — Trnava, centrum</option><option>Packeta — Bratislava, centrum</option></select></div><button class="primary full" id="placeOrder">Odoslať objednávku</button><small>Objednávka je zatiaľ demo formulár. Platby a reálne odosielanie doplníme neskôr.</small></dialog>
+  <script src="script.js"></script>
+</body>
+</html>
