@@ -13,9 +13,7 @@ let cart=JSON.parse(localStorage.getItem("froxy-cart")||"[]"),active="Všetko",c
 const money=n=>n.toFixed(2).replace(".",",")+" €";
 const save=()=>{localStorage.setItem("froxy-cart",JSON.stringify(cart));renderCart()};
 const productFor=item=>item.custom?{name:`Kľúčenka: ${item.name}`,price:6.9}:{...products.find(x=>x.id===item.id)};
-function cartSummary(){
-  return cart.map(i=>{const p=productFor(i);return `${p.name} × ${i.qty} — ${money(p.price*i.qty)}${i.custom?` (farba: ${i.color})`:""}`;}).join("\n");
-}
+function cartSummary(){return cart.map(i=>{const p=productFor(i);return `${p.name} × ${i.qty} — ${money(p.price*i.qty)}${i.custom?` (farba: ${i.color})`:""}`;}).join("\n")}
 function cartTotal(){return cart.reduce((sum,i)=>{const p=productFor(i);return sum+p.price*i.qty},0)}
 function renderProducts(){const el=document.querySelector("#products");el.innerHTML=products.filter(p=>active==="Všetko"||p.cat===active).map(p=>`<article class="product"><div class="visual">${p.icon}</div><div class="info"><span class="tag">${p.cat.toUpperCase()}</span><h3>${p.name}</h3><span class="price">${money(p.price)}</span><button class="buy" data-add="${p.id}">Pridať do košíka</button></div></article>`).join("")}
 function add(id){const x=cart.find(i=>i.id===id&&!i.custom);if(x)x.qty++;else cart.push({id,qty:1});save()}
@@ -28,7 +26,7 @@ const custom=document.querySelector("#customDialog");document.querySelector("#cu
 document.querySelector("#addCustom").onclick=()=>{const name=document.querySelector("#customName").value.trim();if(!name)return alert("Napíš meno alebo prezývku.");cart.push({custom:true,name,color:customColor,qty:1});save();custom.close();drawer.classList.add("open");overlay.classList.add("show")};
 const checkout=document.querySelector("#checkoutDialog");
 document.querySelector("#checkout").onclick=()=>{if(!cart.length)return alert("Košík je prázdny.");checkout.showModal()};
-document.querySelector("#placeOrder").onclick=async()=>{
+document.querySelector("#placeOrder").onclick=()=>{
   if(!cart.length)return alert("Košík je prázdny.");
   const ids=["name","email","phone","street","zip","city"];
   const fields=ids.map(id=>document.querySelector("#"+id));
@@ -36,23 +34,31 @@ document.querySelector("#placeOrder").onclick=async()=>{
   const email=document.querySelector("#email").value.trim();
   if(!/^\S+@\S+\.\S+$/.test(email))return alert("Skontroluj e-mail.");
   const button=document.querySelector("#placeOrder");button.disabled=true;button.textContent="Odosielam objednávku…";
-  const payload={
-    meno:document.querySelector("#name").value.trim(),
+  const orderText=cartSummary();
+  const total=money(cartTotal());
+  const customerName=document.querySelector("#name").value.trim();
+  const form=document.createElement("form");
+  form.method="POST";
+  form.action="https://formsubmit.co/liptak.michal@icloud.com";
+  form.style.display="none";
+  const data={
+    meno:customerName,
     email,
     telefon:document.querySelector("#phone").value.trim(),
     adresa:`${document.querySelector("#street").value.trim()}, ${document.querySelector("#zip").value.trim()} ${document.querySelector("#city").value.trim()}`,
     platba:"Dobierka",
-    produkty:cartSummary(),
-    suma:money(cartTotal()),
-    objednavka_vytvorena:new Date().toLocaleString("sk-SK")
+    produkty:orderText,
+    suma:total,
+    objednavka_vytvorena:new Date().toLocaleString("sk-SK"),
+    _subject:"Nová objednávka — FROXYYY",
+    _replyto:email,
+    _template:"table",
+    _next:"https://debilkoo.github.io/froxyyy-3D-shop/thanks.html",
+    _autoresponse:`Ahoj ${customerName}!\n\nĎakujeme za tvoju objednávku vo FROXYYY.\n\nObjednané produkty:\n${orderText}\n\nCelková suma: ${total}\nPlatba: Dobierka\n\nObjednávku sme prijali a pripravíme ju na odoslanie. Zaplatíš pri doručení.\n\nFROXYYY — 3D doplnky pre tvoj setup.`
   };
-  try{
-    const response=await fetch("https://formsubmit.co/ajax/liptak.michal@icloud.com",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({...payload,_subject:"Nová objednávka — FROXYYY",_template:"table",_replyto:email})});
-    if(!response.ok)throw new Error("send failed");
-    alert("Ďakujeme! Objednávka bola odoslaná. Čoskoro ju spracujeme.");
-    cart=[];save();checkout.close();drawer.classList.remove("open");overlay.classList.remove("show");
-  }catch(error){
-    alert("Objednávku sa nepodarilo odoslať. Skús to prosím znova.");
-  }finally{button.disabled=false;button.textContent="Odoslať objednávku"}
+  Object.entries(data).forEach(([name,value])=>{const input=document.createElement("input");input.type="hidden";input.name=name;input.value=value;form.appendChild(input)});
+  document.body.appendChild(form);
+  cart=[];save();
+  form.submit();
 };
 renderProducts();renderCart();
